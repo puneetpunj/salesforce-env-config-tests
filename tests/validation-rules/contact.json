@@ -1,0 +1,1 @@
+{"TestSuiteName":"Check Validation Rules for object - contact","TestCases":[{"id":1,"TestCaseName":"Validate Validation Rule - Test","inputData":{"name":"Test"},"expectedOutput":{"active":"true","errorConditionFormula":"Birthdate  >  TODAY()","errorMessage":"Birth Date should be less than today"}}]}
