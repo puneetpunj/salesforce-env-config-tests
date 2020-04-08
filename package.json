@@ -9,7 +9,11 @@
   "author": "Puneet Punj",
   "license": "ISC",
   "dependencies": {
+    "chai": "^4.2.0",
     "fs-extra": "^9.0.0",
-    "jsforce": "^1.9.3"
+    "jsforce": "^1.9.3",
+    "mocha": "^7.1.1",
+    "mochawesome": "^5.0.0",
+    "moment-timezone": "^0.5.28"
   }
 }
