@@ -9,7 +9,7 @@
   "author": "Puneet Punj",
   "license": "ISC",
   "dependencies": {
-    "fs": "0.0.1-security",
+    "fs-extra": "^9.0.0",
     "jsforce": "^1.9.3"
   }
 }
