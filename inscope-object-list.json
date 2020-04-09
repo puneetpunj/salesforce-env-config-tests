@@ -1,5 +1,18 @@
-[
-    "Contact",
-    "account",
-    "lead"
-]
+{
+    "baseOrg": "test",
+    "destinationOrg": [
+        "sree",
+        "test"
+    ],
+    "test.objectList": [
+        "contact",
+        "account",
+        "sdsd"
+    ],
+    "sree.objectList": [
+        "contact",
+        "account",
+        "lead",
+        "case"
+    ]
+}
