@@ -1,10 +1,11 @@
 const { buildVLOVTestsforAllObjects, buildValidationRulesTestsforAllObjects } = require('./lib/utiltities');
+const { INFO } = require('./lib/logging')
 
 module.exports.BuildTests = async (envName = 'test', objectList = ['lead']) => {
 
-    const r = await buildValidationRulesTestsforAllObjects(envName, objectList)
-    console.log(r)
-    const a = await buildVLOVTestsforAllObjects(envName, objectList)
-    console.log(a)
+    const buildValidationRuleTestsResponse = await buildValidationRulesTestsforAllObjects(envName, objectList)
+    INFO(buildValidationRuleTestsResponse)
+    const buildVLOVTestsResponse = await buildVLOVTestsforAllObjects(envName, objectList)
+    INFO(buildVLOVTestsResponse)
     return 'All tests generated from base org'
 }
