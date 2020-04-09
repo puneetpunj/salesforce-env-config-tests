@@ -1,4 +1,5 @@
 const fs = require('fs-extra');
+const path = require('path')
 const { ERROR, INFO, WARNING, TABLE } = require('./lib/logging')
 const { sampleCredentialsPresent, sendSalesforceQuery } = require('./lib/utiltities');
 const inscopeData = fs.readJSONSync('./inscope-object-list.json');
@@ -6,7 +7,18 @@ const { baseOrg, destinationOrg } = inscopeData;
 const { BuildTests } = require('./build-env-tests');
 const { ExecuteTests } = require('./tests/execute-tests')
 
-// TODO: Check first if config file exists
+const checkConfigFileExists = (baseOrg, destinationOrg) => {
+    try {
+        fs.readJSONSync(path.resolve(__dirname, `./config/config.${baseOrg}.json`));
+        destinationOrg.forEach(file => fs.readJSONSync(path.resolve(__dirname, `./config/config.${file}.json`)))
+        return true
+    }
+    catch (e) {
+        ERROR(e)
+        return false
+    }
+}
+
 const checkSampleCredentialsForAllEnv = (baseOrg, destinationOrgs) => {
     const checkBaseOrg = sampleCredentialsPresent(baseOrg)
     const checkDestinationOrg = destinationOrgs.map(destinationOrg => sampleCredentialsPresent(destinationOrg))
@@ -46,11 +58,14 @@ const getDestinationValidObjects = async (OrgArray, baseObjectsArray) => {
     }
     return validDestinationObjects;
 }
+
 (async () => {
 
-    // if (checkSampleCredentialsForAllEnv(baseOrg, destinationOrg)) return ERROR('Set your credentials in the env specific config file. \n Set in config/config.<env>.json')
+    if (!checkConfigFileExists(baseOrg, destinationOrg)) return ERROR('Config files for all specified base and destination orgs are not present. Go to config dir to add config files')
 
-    // // Fetch Valid Objects for Base Org
+    if (checkSampleCredentialsForAllEnv(baseOrg, destinationOrg)) return ERROR('Set your credentials in the env specific config file. \n Set in config/config.<env>.json')
+
+    // Fetch Valid Objects for Base Org
     const validBaseOrgObjects = await getvalidObjectsForAnOrg(baseOrg)
     if (validBaseOrgObjects.includes('INVALID_LOGIN')) return ERROR(`Your base Org (${baseOrg}) credentials are incorrect`);
     INFO(`Valid Object List for Base Org - ${validBaseOrgObjects}`)
@@ -61,9 +76,11 @@ const getDestinationValidObjects = async (OrgArray, baseObjectsArray) => {
     if (typeof (validDestinationOrgObjects) == 'string' && validDestinationOrgObjects.includes('INVALID_LOGIN')) return ERROR(validDestinationOrgObjects);
     INFO(`Valid Object List for Destination Org - ${JSON.stringify(validDestinationOrgObjects)}`)
 
-    // const buildTestsResponse = await BuildTests(baseOrg, validBaseOrgObjects);
-    // INFO(buildTestsResponse)
+    // Build Tests referencing Base Org
+    const buildTestsResponse = await BuildTests(baseOrg, validBaseOrgObjects);
+    INFO(buildTestsResponse)
 
+    // Execute Tests for each Destination
     const executionResults = await ExecuteTests(destinationOrg[0], validDestinationOrgObjects[destinationOrg[0]]);
     INFO(executionResults)
 })()
