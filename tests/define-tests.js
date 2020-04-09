@@ -19,10 +19,7 @@ const categoryLevelTests = async (envName, category, objectList) => {
         const fileName = listOfObjectFiles[i]
         const objectNameFromFileName = fileName.replace('.json', '').toLowerCase()
 
-        INFO(`BEFORE: Building Tests for - > ${objectNameFromFileName} - category name - > ${category}`)
         if (!objectList.includes(objectNameFromFileName)) return
-
-        INFO(`AFTER: Building Tests for - > ${objectNameFromFileName} - category name - > ${category}`)
 
         const objectTests = readJSONSync(join(__dirname, `${TESTDIRECTORY}/${category}/${fileName}`));
         const objectLevelSuiteName = suiteInstance.create(parentCategorySuiteName, objectTests.TestSuiteName);
@@ -71,7 +68,7 @@ const buildTests = async (envName, objectList) => {
         const category = mainCategoriesList[i]
         await categoryLevelTests(envName, category, objectList)
     }
-    console.log('test build completed')
+    INFO('test build completed')
 }
 
 const mappers = {
