@@ -8,28 +8,36 @@ const dirs = p => readdirSync(p).filter(f => statSync(join(p, f)).isDirectory())
 const TESTDIRECTORY = '../generated-tests'
 const mainCategoriesList = dirs(join(__dirname, TESTDIRECTORY));
 const { getLOVFieldsDataFromSalesforce, getMetadataDetails, getValidationRules } = require('../lib/utiltities');
+const { INFO } = require('../lib/logging')
 
-const categoryLevelTests = async (category) => {
+const categoryLevelTests = async (envName, category, objectList) => {
 
     const parentCategorySuiteName = suite(`Validate Tests for category - ${category}`);
     const listOfObjectFiles = readdirSync(join(__dirname, `${TESTDIRECTORY}/${category}`))
 
     for (let i = 0; i < listOfObjectFiles.length; i++) {
         const fileName = listOfObjectFiles[i]
+        const objectNameFromFileName = fileName.replace('.json', '').toLowerCase()
+
+        INFO(`BEFORE: Building Tests for - > ${objectNameFromFileName} - category name - > ${category}`)
+        if (!objectList.includes(objectNameFromFileName)) return
+
+        INFO(`AFTER: Building Tests for - > ${objectNameFromFileName} - category name - > ${category}`)
+
         const objectTests = readJSONSync(join(__dirname, `${TESTDIRECTORY}/${category}/${fileName}`));
         const objectLevelSuiteName = suiteInstance.create(parentCategorySuiteName, objectTests.TestSuiteName);
-        const metadataDetails = await getMetadata(category, fileName.replace('.json', ''))
+        const metadataDetails = await getMetadata(envName, category, objectNameFromFileName)
         buildObjectLevelTests(objectLevelSuiteName, objectTests, metadataDetails, category)
     }
 }
 
-const getMetadata = async (category, objectName) => {
+const getMetadata = async (envName, category, objectName) => {
     if (category.includes('validation-rules')) {
-        const metadata = await getMetadataDetails(objectName);
+        const metadata = await getMetadataDetails(envName, objectName);
         return getValidationRules(metadata)
     }
     else if (category.includes("lov"))
-        return await getLOVFieldsDataFromSalesforce(objectName)
+        return await getLOVFieldsDataFromSalesforce(envName, objectName)
 }
 
 const buildObjectLevelTests = (testSuite, objectTests, metadataDetails, checkType) => {
@@ -58,10 +66,10 @@ const performAssertions = (actualDetails, test) => {
     };
 }
 
-const buildTests = async () => {
+const buildTests = async (envName, objectList) => {
     for (let i = 0; i < mainCategoriesList.length; i++) {
         const category = mainCategoriesList[i]
-        await categoryLevelTests(category)
+        await categoryLevelTests(envName, category, objectList)
     }
     console.log('test build completed')
 }
