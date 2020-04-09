@@ -1,9 +1,0 @@
-{
-    "reporterEnabled": "mochawesome, good-mocha-html-reporter,mocha-junit-reporter",
-    "mochawesomeReporterOptions": {
-        "reportDir": "/mnt/results/mochawesome"
-    },
-    "mochaJunitReporterReporterOptions": {
-        "mochaFile": "/mnt/results/junit/junit-custom.xml"
-    }
-}
