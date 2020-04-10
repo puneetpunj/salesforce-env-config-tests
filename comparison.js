@@ -63,7 +63,7 @@ const getDestinationValidObjects = async (OrgArray, baseObjectsArray) => {
 
     if (!checkConfigFileExists(baseOrg, destinationOrg)) return ERROR('Config files for all specified base and destination orgs are not present. Go to config dir to add config files')
 
-    if (checkSampleCredentialsForAllEnv(baseOrg, destinationOrg)) return ERROR('Set your credentials in the env specific config file. \n Set in config/config.<env>.json')
+    if (checkSampleCredentialsForAllEnv(baseOrg, destinationOrg)) return ERROR('Looks like you have not setup your credentials in the org specific config file. \n \n Add/update config/config.<env>.json with actual credentials')
 
     // Fetch Valid Objects for Base Org
     const validBaseOrgObjects = await getvalidObjectsForAnOrg(baseOrg)
