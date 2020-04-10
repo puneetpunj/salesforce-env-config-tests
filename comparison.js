@@ -3,8 +3,8 @@ const path = require('path')
 const { ERROR, INFO, WARNING, TABLE } = require('./lib/logging')
 const { sampleCredentialsPresent, sendSalesforceQuery } = require('./lib/utiltities');
 const inscopeData = fs.readJSONSync('./inscope-object-list.json');
-const { baseOrg, destinationOrg } = inscopeData;
 const { BuildTests } = require('./build-env-tests');
+const { DefineTests } = require('./test-scripts/define-tests')
 const { ExecuteTests } = require('./test-scripts/execute-tests')
 
 const checkConfigFileExists = (baseOrg, destinationOrg) => {
@@ -59,20 +59,59 @@ const getDestinationValidObjects = async (OrgArray, baseObjectsArray) => {
     return validDestinationObjects;
 }
 
+
+const defineTestsForAllDestinationOrgs = (destinationOrgs, validDestinationOrgObjects) => {
+
+    return Promise.all(destinationOrgs.map(async destinationOrg => {
+        INFO(`Building Tests for Org - ${destinationOrg} and Object List - ${validDestinationOrgObjects[destinationOrg]}`)
+        await DefineTests(destinationOrg, validDestinationOrgObjects[destinationOrg]);
+        INFO('Tests defined for ' + destinationOrg)
+    }))
+
+}
+
+const checkObjectsForAllOrgsExists = (baseOrg, destinationOrgs) => {
+
+    const baseOrgOLArray = Array.isArray(inscopeData[`${baseOrg}.objectList`])
+    const destOrgOLArray = destinationOrgs.map(d => Array.isArray(inscopeData[`${d}.objectList`]))
+    return baseOrgOLArray ? destOrgOLArray.includes(false) ? false : true : false
+}
+
+const checkBaseAndDestinationOrgs = (json) => {
+    const { baseOrg, destinationOrgs } = json
+    return typeof (baseOrg) == 'string' ? Array.isArray(destinationOrgs) ? true : false : false
+}
+
+
+const checkErrors = () => {
+
+    if (!checkBaseAndDestinationOrgs(inscopeData)) { ERROR('Looks like Base Org and Destination orgs keys are not defined correctly in input json. \n\n You can define only one "baseOrg" and "destinationOrgs" must be an array even if you want to specify only 1 destination'); return true }
+
+    const { baseOrg, destinationOrgs } = inscopeData;
+
+    if (!checkObjectsForAllOrgsExists(baseOrg, destinationOrgs)) { ERROR('Looks like "objectList" array does not exist for all base/destination orgs'); return true }
+
+    if (!checkConfigFileExists(baseOrg, destinationOrgs)) { ERROR('Config files for all specified base and destination orgs are not present. Go to config dir to add config files'); return true }
+
+    if (checkSampleCredentialsForAllEnv(baseOrg, destinationOrgs)) { ERROR('Looks like you have not setup your credentials in the org specific config file. \n \n Add/update config/config.<env>.json with actual credentials'); return true }
+
+    return false
+
+}
 (async () => {
 
-    if (!checkConfigFileExists(baseOrg, destinationOrg)) return ERROR('Config files for all specified base and destination orgs are not present. Go to config dir to add config files')
+    if (checkErrors()) return
 
-    if (checkSampleCredentialsForAllEnv(baseOrg, destinationOrg)) return ERROR('Looks like you have not setup your credentials in the org specific config file. \n \n Add/update config/config.<env>.json with actual credentials')
+    const { baseOrg, destinationOrgs } = inscopeData;
 
     // Fetch Valid Objects for Base Org
     const validBaseOrgObjects = await getvalidObjectsForAnOrg(baseOrg)
     if (validBaseOrgObjects.includes('INVALID_LOGIN')) return ERROR(`Your base Org (${baseOrg}) credentials are incorrect`);
     INFO(`Valid Object List for Base Org - ${validBaseOrgObjects}`)
-    if (validBaseOrgObjects.length == 0) { ERROR('No valid object specified in input file'); return }
+    if (validBaseOrgObjects.length == 0) { ERROR('No valid object specified in input file for Base Org'); return }
 
     // Fetch Valid Objects for Destination Orgs
-    const validDestinationOrgObjects = await getDestinationValidObjects(destinationOrg, validBaseOrgObjects)
+    const validDestinationOrgObjects = await getDestinationValidObjects(destinationOrgs, validBaseOrgObjects)
     if (typeof (validDestinationOrgObjects) == 'string' && validDestinationOrgObjects.includes('INVALID_LOGIN')) return ERROR(validDestinationOrgObjects);
     INFO(`Valid Object List for Destination Org - ${JSON.stringify(validDestinationOrgObjects)}`)
 
@@ -80,7 +119,11 @@ const getDestinationValidObjects = async (OrgArray, baseObjectsArray) => {
     const buildTestsResponse = await BuildTests(baseOrg, validBaseOrgObjects);
     INFO(buildTestsResponse)
 
-    // Execute Tests for each Destination
-    const executionResults = await ExecuteTests(destinationOrg[0], validDestinationOrgObjects[destinationOrg[0]]);
+    // Define Tests for each Destination
+    await defineTestsForAllDestinationOrgs(destinationOrgs, validDestinationOrgObjects)
+
+    // Execute Actual tests and generate report
+    const executionResults = await ExecuteTests();
     INFO(executionResults)
+
 })()

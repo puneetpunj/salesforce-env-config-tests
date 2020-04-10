@@ -1,12 +1,8 @@
 
 const { runMochaTests } = require('../lib/mocha-setup');
-const { buildTests } = require('./define-tests');
 const { INFO } = require('../lib/logging')
-module.exports.ExecuteTests = async (envName = 'test', objectList = ['lead']) => {
-
-    INFO(`Running Tests for ENV - ${envName} and Object List - ${objectList}`)
-    await buildTests(envName, objectList);
-
+module.exports.ExecuteTests = async () => {
+    INFO('Starting Test Execution for All Destinations')
     try {
         const result = await runMochaTests()
         return result

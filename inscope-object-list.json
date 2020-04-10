@@ -1,7 +1,8 @@
 {
     "baseOrg": "base",
-    "destinationOrg": [
-        "dest1"
+    "destinationOrgs": [
+        "dest1",
+        "dest2"
     ],
     "base.objectList": [
         "contact",
@@ -9,6 +10,12 @@
         "sdsd"
     ],
     "dest1.objectList": [
+        "contact",
+        "account",
+        "lead",
+        "case"
+    ],
+    "dest2.objectList": [
         "contact",
         "account",
         "lead",

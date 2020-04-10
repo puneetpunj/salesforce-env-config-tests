@@ -12,7 +12,7 @@ const { INFO } = require('../lib/logging')
 
 const categoryLevelTests = async (envName, category, objectList) => {
 
-    const parentCategorySuiteName = suite(`Validate Tests for category - ${category}`);
+    const parentCategorySuiteName = suite(`ORG -> ${envName} - Validate Tests for category - ${category}`);
     const listOfObjectFiles = readdirSync(join(__dirname, `${TESTDIRECTORY}/${category}`))
 
     for (let i = 0; i < listOfObjectFiles.length; i++) {
@@ -63,12 +63,11 @@ const performAssertions = (actualDetails, test) => {
     };
 }
 
-const buildTests = async (envName, objectList) => {
+const DefineTests = async (envName, objectList) => {
     for (let i = 0; i < mainCategoriesList.length; i++) {
         const category = mainCategoriesList[i]
         await categoryLevelTests(envName, category, objectList)
     }
-    INFO('test build completed')
 }
 
 const mappers = {
@@ -89,4 +88,4 @@ const mappers = {
 
 }
 
-module.exports = { buildTests }
+module.exports = { DefineTests }
