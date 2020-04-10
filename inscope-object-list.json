@@ -3,12 +3,12 @@
     "destinationOrg": [
         "dest1"
     ],
-    "test.objectList": [
+    "base.objectList": [
         "contact",
         "account",
         "sdsd"
     ],
-    "sree.objectList": [
+    "dest1.objectList": [
         "contact",
         "account",
         "lead",
