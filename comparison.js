@@ -5,7 +5,7 @@ const { sampleCredentialsPresent, sendSalesforceQuery } = require('./lib/utiltit
 const inscopeData = fs.readJSONSync('./inscope-object-list.json');
 const { baseOrg, destinationOrg } = inscopeData;
 const { BuildTests } = require('./build-env-tests');
-const { ExecuteTests } = require('./tests/execute-tests')
+const { ExecuteTests } = require('./test-scripts/execute-tests')
 
 const checkConfigFileExists = (baseOrg, destinationOrg) => {
     try {

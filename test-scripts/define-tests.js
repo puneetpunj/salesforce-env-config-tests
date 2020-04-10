@@ -5,7 +5,7 @@ const reportValue = require('mochawesome/addContext')
 const { readdirSync, statSync, readJSONSync } = require('fs-extra')
 const { join } = require('path')
 const dirs = p => readdirSync(p).filter(f => statSync(join(p, f)).isDirectory())
-const TESTDIRECTORY = '../generated-tests'
+const TESTDIRECTORY = '../auto-generated-tests'
 const mainCategoriesList = dirs(join(__dirname, TESTDIRECTORY));
 const { getLOVFieldsDataFromSalesforce, getMetadataDetails, getValidationRules } = require('../lib/utiltities');
 const { INFO } = require('../lib/logging')
