@@ -1,8 +1,7 @@
 {
-    "baseOrg": "test",
+    "baseOrg": "base",
     "destinationOrg": [
-        "sree",
-        "test"
+        "dest1"
     ],
     "test.objectList": [
         "contact",

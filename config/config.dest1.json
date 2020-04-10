@@ -1,0 +1,6 @@
+{
+    "sfURL": "https://login.salesforce.com",
+    "username": "sampleUsername",
+    "password": "samplePassword",
+    "security_token": "sampleSecurityToken"
+}
