@@ -1,10 +1,9 @@
 {
-  "name": "salesforce-api-testcases",
+  "name": "salesforce-env-config-tests",
   "version": "1.0.0",
-  "description": "API tests cases for all salesforce objects",
-  "main": "index.js",
+  "description": "Validate destination orgs config based on based org",
   "scripts": {
-    "test": "jest"
+    "comparison": "node comparison.js"
   },
   "author": "Puneet Punj",
   "license": "ISC",
