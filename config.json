@@ -1,0 +1,32 @@
+{
+    "loginDetails": {
+        "base": {
+            "loginURL": "https://login.salesforce.com",
+            "username": "sampleUsername",
+            "password": "samplePassword",
+            "security_token": "sampleSecurityToken",
+            "version": 47
+        },
+        "dest1": {
+            "loginURL": "https://login.salesforce.com",
+            "username": "sampleUsername",
+            "password": "samplePassword",
+            "security_token": "sampleSecurityToken",
+            "version": 47
+        },
+        "dest2": {
+            "loginURL": "https://login.salesforce.com",
+            "username": "sampleUsername",
+            "password": "samplePassword",
+            "security_token": "sampleSecurityToken",
+            "version": 47
+        }
+    },
+    "LOGGING": {
+        "ERROR": true,
+        "LOG": true,
+        "SUCCESS": true,
+        "WARNING": true,
+        "INFO": true
+    }
+}
