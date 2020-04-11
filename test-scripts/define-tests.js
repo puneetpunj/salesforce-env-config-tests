@@ -8,11 +8,10 @@ const dirs = p => readdirSync(p).filter(f => statSync(join(p, f)).isDirectory())
 const TESTDIRECTORY = '../auto-generated-tests'
 const mainCategoriesList = dirs(join(__dirname, TESTDIRECTORY));
 const { getLOVFieldsDataFromSalesforce, getMetadataDetails, getValidationRules } = require('../lib/utiltities');
-const { INFO } = require('../lib/logging')
 
-const categoryLevelTests = async (envName, category, objectList) => {
+const categoryLevelTests = async (envName, category, objectList, parentEnvSuiteName) => {
 
-    const parentCategorySuiteName = suite(`ORG -> ${envName} - Validate Tests for category - ${category}`);
+    const parentCategorySuiteName = suiteInstance.create(parentEnvSuiteName, `Validate Tests for category - ${category}`);
     const listOfObjectFiles = readdirSync(join(__dirname, `${TESTDIRECTORY}/${category}`))
 
     for (let i = 0; i < listOfObjectFiles.length; i++) {
@@ -49,8 +48,10 @@ const buildObjectLevelTests = (testSuite, objectTests, metadataDetails, checkTyp
         }))
     }
 }
+
 const performAssertions = (actualDetails, test) => {
-    expect(actualDetails).to.not.equal(`Validation Rule ${test.inputData.name} Not found`)
+    expect(actualDetails).to.not.equal(`Validation Rule ${test.inputData.name} Not found`, `Validation Rule -> "${test.inputData.name}" does not exist`)
+    expect(actualDetails).to.not.equal(`Field ${test.inputData.name} Not found`, `Field -> "${test.inputData.name}" does not exist`)
 
     for (let i = 0; i < Object.keys(test.expectedOutput).length; i++) {
         const expectedKey = Object.keys(test.expectedOutput)[i]
@@ -65,9 +66,10 @@ const performAssertions = (actualDetails, test) => {
 }
 
 const DefineTests = async (envName, objectList) => {
+    const parentEnvSuiteName = suite(`ORG -> ${envName}`);
     for (let i = 0; i < mainCategoriesList.length; i++) {
         const category = mainCategoriesList[i]
-        await categoryLevelTests(envName, category, objectList)
+        await categoryLevelTests(envName, category, objectList, parentEnvSuiteName)
     }
 }
 
