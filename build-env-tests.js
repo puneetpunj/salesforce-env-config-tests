@@ -1,7 +1,7 @@
 const { buildVLOVTestsforAllObjects, buildValidationRulesTestsforAllObjects } = require('./lib/utiltities');
 const { INFO } = require('./lib/logging')
 
-module.exports.BuildTests = async (envName = 'test', objectList = ['lead']) => {
+module.exports.AutoGenerateTests = async (envName = 'test', objectList = ['lead']) => {
 
     INFO(`Start building tests for Validation Rules using base Org - ${envName}`)
     await buildValidationRulesTestsforAllObjects(envName, objectList)
