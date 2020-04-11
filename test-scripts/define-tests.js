@@ -24,6 +24,7 @@ const categoryLevelTests = async (envName, category, objectList) => {
         const objectTests = readJSONSync(join(__dirname, `${TESTDIRECTORY}/${category}/${fileName}`));
         const objectLevelSuiteName = suiteInstance.create(parentCategorySuiteName, objectTests.TestSuiteName);
         const metadataDetails = await getMetadata(envName, category, objectNameFromFileName)
+
         buildObjectLevelTests(objectLevelSuiteName, objectTests, metadataDetails, category)
     }
 }

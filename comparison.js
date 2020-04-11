@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path')
-const { ERROR, INFO, WARNING, TABLE } = require('./lib/logging')
+const { ERROR, INFO, WARNING, SUCCESS, LOG } = require('./lib/logging')
 const { sampleCredentialsPresent, sendSalesforceQuery } = require('./lib/utiltities');
 const inscopeData = fs.readJSONSync('./inscope-object-list.json');
 const { BuildTests } = require('./build-env-tests');
@@ -34,9 +34,11 @@ const getOnlyValidObjects = (baseArray, secondaryArray, orgName) => {
     return validObjects;
 }
 
-// TODO: Get objects from each org
 const getvalidObjectsForAnOrg = async (Org) => {
     const inputObjectList = inscopeData[`${Org}.objectList`]
+
+    INFO(`Input objects list for ${Org} is ${inputObjectList}`)
+
     const objectListWithQuotes = "'" + inputObjectList.join("','") + "'";
     const query = `Select QualifiedApiName from EntityDefinition where QualifiedApiName IN (${objectListWithQuotes}) order by QualifiedApiName`
     const OrgObjectsInSalesforce = await sendSalesforceQuery(Org, query)
@@ -53,19 +55,25 @@ const getDestinationValidObjects = async (OrgArray, baseObjectsArray) => {
     for (let i = 0; i < OrgArray.length; i++) {
         const validSalesforceObjects = await getvalidObjectsForAnOrg(OrgArray[i])
         if (validSalesforceObjects.includes('INVALID_LOGIN')) return `Org - ${OrgArray[i]} --> ${validSalesforceObjects}`
+
+        INFO(`Valid Object List from Salesforce for ORG -> ${OrgArray[i]} is -> ${validSalesforceObjects}`)
+
+        INFO(`Filter further as comparison to Base Org Objects - ${baseObjectsArray}`)
+
         // further filter down based on baseOrg's valid Objects
         validDestinationObjects[OrgArray[i]] = getOnlyValidObjects(baseObjectsArray, validSalesforceObjects, OrgArray[i])
+
+        SUCCESS(`Final valid Object List from destination org -> ${OrgArray[i]} is -> ${validDestinationObjects[OrgArray[i]]}`)
     }
     return validDestinationObjects;
 }
 
-
 const defineTestsForAllDestinationOrgs = (destinationOrgs, validDestinationOrgObjects) => {
 
     return Promise.all(destinationOrgs.map(async destinationOrg => {
-        INFO(`Building Tests for Org - ${destinationOrg} and Object List - ${validDestinationOrgObjects[destinationOrg]}`)
+        INFO(`Defining Tests for Org - ${destinationOrg} and Object List - ${validDestinationOrgObjects[destinationOrg]}`)
         await DefineTests(destinationOrg, validDestinationOrgObjects[destinationOrg]);
-        INFO('Tests defined for ' + destinationOrg)
+        SUCCESS(`Tests defined for all objects for Org -> ${destinationOrg}`)
     }))
 
 }
@@ -98,31 +106,43 @@ const checkErrors = () => {
     return false
 
 }
+
+const printAsterics = () => LOG('*'.repeat(80));
+
 (async () => {
 
     if (checkErrors()) return
-
+    SUCCESS('No error found in setup.')
     const { baseOrg, destinationOrgs } = inscopeData;
 
     // Fetch Valid Objects for Base Org
+    printAsterics()
+    LOG('Starting to Get Valid Objects for Base Org')
     const validBaseOrgObjects = await getvalidObjectsForAnOrg(baseOrg)
     if (validBaseOrgObjects.includes('INVALID_LOGIN')) return ERROR(`Your base Org (${baseOrg}) credentials are incorrect`);
-    INFO(`Valid Object List for Base Org - ${validBaseOrgObjects}`)
     if (validBaseOrgObjects.length == 0) { ERROR('No valid object specified in input file for Base Org'); return }
+    SUCCESS(`Valid Object List for Base Org - ${validBaseOrgObjects}`)
 
     // Fetch Valid Objects for Destination Orgs
+    printAsterics()
+    LOG('Starting to Get Valid Objects for Destination Orgs')
     const validDestinationOrgObjects = await getDestinationValidObjects(destinationOrgs, validBaseOrgObjects)
     if (typeof (validDestinationOrgObjects) == 'string' && validDestinationOrgObjects.includes('INVALID_LOGIN')) return ERROR(validDestinationOrgObjects);
-    INFO(`Valid Object List for Destination Org - ${JSON.stringify(validDestinationOrgObjects)}`)
+    SUCCESS(`Valid Object List for all Destination Orgs is - ${JSON.stringify(validDestinationOrgObjects)}`)
 
     // Build Tests referencing Base Org
+    printAsterics()
+    LOG('Start auto generation of test files using base org')
     const buildTestsResponse = await BuildTests(baseOrg, validBaseOrgObjects);
-    INFO(buildTestsResponse)
+    SUCCESS(buildTestsResponse)
 
     // Define Tests for each Destination
+    printAsterics()
+    LOG('Start defining tests for all destination Orgs')
     await defineTestsForAllDestinationOrgs(destinationOrgs, validDestinationOrgObjects)
 
     // Execute Actual tests and generate report
+    printAsterics()
     const executionResults = await ExecuteTests();
     INFO(executionResults)
 
