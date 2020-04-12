@@ -59,14 +59,14 @@ const getDestinationOrgsValidObjects = async (OrgArray, baseObjectsArray) => {
         const validSalesforceObjects = await getvalidObjectsForAnOrg(OrgArray[i])
         if (validSalesforceObjects.includes('INVALID_LOGIN')) return `Org - ${OrgArray[i]} --> ${validSalesforceObjects}`
 
-        INFO(`Valid Object List from Salesforce for ORG -> [${OrgArray[i]}] is -> ${validSalesforceObjects}`)
+        INFO(`Valid Object List from Salesforce for ORG -> ${OrgArray[i]} is -> [${validSalesforceObjects}]`)
 
         INFO(`Filter further as comparison to Base Org Objects - [${baseObjectsArray}]`)
 
         // further filter down based on baseOrg's valid Objects
         validDestinationObjects[OrgArray[i]] = getOnlyValidObjects(baseObjectsArray, validSalesforceObjects, OrgArray[i])
 
-        SUCCESS(`Final valid Object List from destination org -> ${OrgArray[i]} is -> ${validDestinationObjects[OrgArray[i]]}`)
+        SUCCESS(`Final valid Object List from destination org -> ${OrgArray[i]} is -> [${validDestinationObjects[OrgArray[i]]}]`)
     }
     return validDestinationObjects;
 }
@@ -128,7 +128,7 @@ const printAsterics = () => LOG('*'.repeat(80));
 
     // Fetch Valid Objects for Destination Orgs
     printAsterics()
-    LOG('Starting to Get Valid Objects for Destination Orgs')
+    LOG(`Starting to Get Valid Objects for Base Org using username - ${readConfigFile().loginDetails[baseOrg].username}`)
     const validDestinationOrgObjects = await getDestinationOrgsValidObjects(destinationOrgs, validBaseOrgObjects)
     if (typeof (validDestinationOrgObjects) == 'string' && validDestinationOrgObjects.includes('INVALID_LOGIN')) return ERROR(validDestinationOrgObjects);
     SUCCESS(`Valid Object List for all Destination Orgs is - ${JSON.stringify(validDestinationOrgObjects)} `)
