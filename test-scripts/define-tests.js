@@ -8,10 +8,11 @@ const dirs = p => readdirSync(p).filter(f => statSync(join(p, f)).isDirectory())
 const TESTDIRECTORY = '../auto-generated-tests'
 const mainCategoriesList = dirs(join(__dirname, TESTDIRECTORY));
 const { getLOVFieldsDataFromSalesforce, getMetadataDetails, getValidationRules } = require('../lib/utiltities');
+const { INFO } = require('../lib/logging')
 
 const categoryLevelTests = async (envName, category, objectList, parentEnvSuiteName) => {
 
-    const parentCategorySuiteName = suiteInstance.create(parentEnvSuiteName, `Validate Tests for category - ${category}`);
+    const parentCategorySuiteName = suiteInstance.create(parentEnvSuiteName, `Validate Tests for category - ${category === 'lovs' ? 'List Of Values' : category}`);
     const listOfObjectFiles = readdirSync(join(__dirname, `${TESTDIRECTORY}/${category}`))
 
     for (let i = 0; i < listOfObjectFiles.length; i++) {
@@ -23,8 +24,15 @@ const categoryLevelTests = async (envName, category, objectList, parentEnvSuiteN
         const objectTests = readJSONSync(join(__dirname, `${TESTDIRECTORY}/${category}/${fileName}`));
         const objectLevelSuiteName = suiteInstance.create(parentCategorySuiteName, objectTests.TestSuiteName);
         const metadataDetails = await getMetadata(envName, category, objectNameFromFileName)
-
-        buildObjectLevelTests(objectLevelSuiteName, objectTests, metadataDetails, category)
+        if (typeof (metadataDetails) == 'string' && metadataDetails.includes('no record type exits')) {
+            INFO(metadataDetails)
+            objectLevelSuiteName.addTest(new Test('Validate at least one Record Type is available', function () {
+                reportValue(this, `Metadata Details - ${metadataDetails}`)
+                expect(metadataDetails).to.not.equal(`no record type exits`, `It appears no RecordType exist for this object (${objectNameFromFileName}). Hence, no individual LOV tests has been executed. `)
+            }))
+        } else {
+            buildObjectLevelTests(objectLevelSuiteName, objectTests, metadataDetails, category)
+        }
     }
 }
 
