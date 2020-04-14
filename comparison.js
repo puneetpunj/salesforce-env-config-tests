@@ -1,16 +1,18 @@
 const { readJSONSync } = require('fs-extra');
 const { ERROR, INFO, WARNING, SUCCESS, LOG, TABLE } = require('./lib/logging')
 const { sampleCredentialsPresent, sendSalesforceQuery, readConfigFile } = require('./lib/utiltities');
-const inscopeData = readJSONSync('./inscope-object-list.json');
+// const inscopeData = readJSONSync('./inscope-object-list.json');
+const configFileDetails = readConfigFile();
 const { AutoGenerateTests } = require('./build-env-tests');
 const { DefineTests } = require('./test-scripts/define-tests')
 const { ExecuteTests } = require('./test-scripts/execute-tests')
+const { printReportTable } = require('./lib/print-report-table')
 
 const checkSalesforceCredKeysAvailable = creds => typeof (creds) == 'object' ? true : false
 
 const checkConfigExists = (baseOrg, destinationOrg) => {
 
-    const configFileDetails = readConfigFile();
+
     const baseOrgCreds = configFileDetails.loginDetails[baseOrg]
     const baseOrgCredsCheck = checkSalesforceCredKeysAvailable(baseOrgCreds)
     const destOrgCredsCheck = destinationOrg.map(org => {
@@ -37,7 +39,7 @@ const getOnlyValidObjects = (baseArray, secondaryArray, orgName) => {
 }
 
 const getvalidObjectsForAnOrg = async Org => {
-    const inputObjectList = inscopeData[`${Org}.objectList`]
+    const inputObjectList = configFileDetails.objectList[Org]
 
     INFO(`Input objects list for ${Org} org is [${inputObjectList}]`)
 
@@ -72,7 +74,8 @@ const getDestinationOrgsValidObjects = async (OrgArray, baseObjectsArray) => {
 }
 
 const defineTestsForAllDestinationOrgs = (destinationOrgs, validDestinationOrgObjects) => {
-
+    printAsterics()
+    LOG('Start defining tests for all destination Orgs')
     return Promise.all(destinationOrgs.map(async destinationOrg => {
         INFO(`Defining Tests for Org - ${destinationOrg} and Object List - ${validDestinationOrgObjects[destinationOrg]}`)
         await DefineTests(destinationOrg, validDestinationOrgObjects[destinationOrg]);
@@ -83,8 +86,8 @@ const defineTestsForAllDestinationOrgs = (destinationOrgs, validDestinationOrgOb
 
 const checkObjectsForAllOrgsExists = (baseOrg, destinationOrgs) => {
 
-    const baseOrgOLArray = Array.isArray(inscopeData[`${baseOrg}.objectList`])
-    const destOrgOLArray = destinationOrgs.map(d => Array.isArray(inscopeData[`${d}.objectList`]))
+    const baseOrgOLArray = Array.isArray(configFileDetails.objectList[baseOrg])
+    const destOrgOLArray = destinationOrgs.map(d => Array.isArray(configFileDetails.objectList[d]))
     return baseOrgOLArray ? destOrgOLArray.includes(false) ? false : true : false
 }
 
@@ -96,9 +99,9 @@ const checkBaseAndDestinationOrgs = (json) => {
 
 const checkErrors = () => {
 
-    if (!checkBaseAndDestinationOrgs(inscopeData)) { ERROR('Looks like Base Org and Destination orgs keys are not defined correctly in input json. \n\n You can define only one "baseOrg" and "destinationOrgs" must be an array even if you want to specify only 1 destination'); return true }
+    if (!checkBaseAndDestinationOrgs(configFileDetails)) { ERROR('Looks like Base Org and Destination orgs keys are not defined correctly in input json. \n\n You can define only one "baseOrg" and "destinationOrgs" must be an array even if you want to specify only 1 destination'); return true }
 
-    const { baseOrg, destinationOrgs } = inscopeData;
+    const { baseOrg, destinationOrgs } = configFileDetails;
 
     if (!checkObjectsForAllOrgsExists(baseOrg, destinationOrgs)) { ERROR('Looks like "objectList" array does not exist for all base/destination orgs'); return true }
 
@@ -112,41 +115,50 @@ const checkErrors = () => {
 
 const printAsterics = () => LOG('*'.repeat(80));
 
-(async () => {
 
-    if (checkErrors()) return
-    SUCCESS('No error found in setup.')
-    const { baseOrg, destinationOrgs } = inscopeData;
-
-    // Fetch Valid Objects for Base Org
-    printAsterics()
-    LOG('Starting to Get Valid Objects for Base Org')
-    const validBaseOrgObjects = await getvalidObjectsForAnOrg(baseOrg)
-    if (validBaseOrgObjects.includes('INVALID_LOGIN')) return ERROR(`Your base Org (${baseOrg}) credentials are incorrect`);
-    if (validBaseOrgObjects.length == 0) { ERROR('No valid object specified in input file for Base Org'); return }
-    SUCCESS(`Valid Object List for Base Org - [${validBaseOrgObjects}]`)
-
-    // Fetch Valid Objects for Destination Orgs
-    printAsterics()
-    LOG(`Starting to Get Valid Objects for Base Org using username - ${readConfigFile().loginDetails[baseOrg].username}`)
-    const validDestinationOrgObjects = await getDestinationOrgsValidObjects(destinationOrgs, validBaseOrgObjects)
-    if (typeof (validDestinationOrgObjects) == 'string' && validDestinationOrgObjects.includes('INVALID_LOGIN')) return ERROR(validDestinationOrgObjects);
-    SUCCESS(`Valid Object List for all Destination Orgs is - ${JSON.stringify(validDestinationOrgObjects)} `)
-
+const autoGenerateTestsForBaseOrg = async (baseOrg, validBaseOrgObjects) => {
     // Build Tests referencing Base Org
     printAsterics()
     LOG('Start auto generation of test files using base org')
     const buildTestsResponse = await AutoGenerateTests(baseOrg, validBaseOrgObjects);
     SUCCESS(buildTestsResponse)
+}
 
-    // Define Tests for each Destination
-    printAsterics()
-    LOG('Start defining tests for all destination Orgs')
-    await defineTestsForAllDestinationOrgs(destinationOrgs, validDestinationOrgObjects)
-
+const executeTestsAndGenerateReport = async () => {
     // Execute Actual tests and generate report
     printAsterics()
     const executionResults = await ExecuteTests();
     INFO(executionResults)
+}
+
+
+(async () => {
+
+    // if (checkErrors()) return
+    // SUCCESS('No error found in setup.')
+    // const { baseOrg, destinationOrgs } = configFileDetails;
+
+    // // Fetch Valid Objects for Base Org
+    // printAsterics()
+    // LOG('Starting to Get Valid Objects for Base Org')
+    // const validBaseOrgObjects = await getvalidObjectsForAnOrg(baseOrg)
+    // if (validBaseOrgObjects.includes('INVALID_LOGIN')) return ERROR(`Your base Org (${baseOrg}) credentials are incorrect`);
+    // if (validBaseOrgObjects.length == 0) { ERROR('No valid object specified in input file for Base Org'); return }
+    // SUCCESS(`Valid Object List for Base Org - [${validBaseOrgObjects}]`)
+
+    // // Fetch Valid Objects for Destination Orgs
+    // printAsterics()
+    // LOG(`Starting to Get Valid Objects for Base Org using username - ${readConfigFile().loginDetails[baseOrg].username}`)
+    // const validDestinationOrgObjects = await getDestinationOrgsValidObjects(destinationOrgs, validBaseOrgObjects)
+    // if (typeof (validDestinationOrgObjects) == 'string' && validDestinationOrgObjects.includes('INVALID_LOGIN')) return ERROR(validDestinationOrgObjects);
+    // SUCCESS(`Valid Object List for all Destination Orgs is - ${JSON.stringify(validDestinationOrgObjects)} `)
+
+    // await autoGenerateTestsForBaseOrg(baseOrg, validBaseOrgObjects)
+
+    // await defineTestsForAllDestinationOrgs(destinationOrgs, validDestinationOrgObjects)
+
+    // await executeTestsAndGenerateReport()
+
+    printReportTable();
 
 })()
