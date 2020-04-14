@@ -1,7 +1,6 @@
-const { readJSONSync } = require('fs-extra');
+const { writeJSONSync } = require('fs-extra');
 const { ERROR, INFO, WARNING, SUCCESS, LOG, TABLE } = require('./lib/logging')
 const { sampleCredentialsPresent, sendSalesforceQuery, readConfigFile } = require('./lib/utiltities');
-// const inscopeData = readJSONSync('./inscope-object-list.json');
 const configFileDetails = readConfigFile();
 const { AutoGenerateTests } = require('./build-env-tests');
 const { DefineTests } = require('./test-scripts/define-tests')
@@ -117,11 +116,15 @@ const printAsterics = () => LOG('*'.repeat(80));
 
 
 const autoGenerateTestsForBaseOrg = async (baseOrg, validBaseOrgObjects) => {
-    // Build Tests referencing Base Org
-    printAsterics()
-    LOG('Start auto generation of test files using base org')
-    const buildTestsResponse = await AutoGenerateTests(baseOrg, validBaseOrgObjects);
-    SUCCESS(buildTestsResponse)
+    if (!configFileDetails.skipBaseTestGeneration) {
+        // Build Tests referencing Base Org
+        printAsterics()
+        LOG('Start auto generation of test files using base org')
+        const buildTestsResponse = await AutoGenerateTests(baseOrg, validBaseOrgObjects);
+        SUCCESS(buildTestsResponse)
+        configFileDetails.skipBaseTestGeneration = true
+        writeJSONSync('./config.json', { ...configFileDetails, skipBaseTestGeneration: true })
+    }
 }
 
 const executeTestsAndGenerateReport = async () => {
@@ -134,30 +137,30 @@ const executeTestsAndGenerateReport = async () => {
 
 (async () => {
 
-    // if (checkErrors()) return
-    // SUCCESS('No error found in setup.')
-    // const { baseOrg, destinationOrgs } = configFileDetails;
+    if (checkErrors()) return
+    SUCCESS('No error found in setup.')
+    const { baseOrg, destinationOrgs } = configFileDetails;
 
-    // // Fetch Valid Objects for Base Org
-    // printAsterics()
-    // LOG('Starting to Get Valid Objects for Base Org')
-    // const validBaseOrgObjects = await getvalidObjectsForAnOrg(baseOrg)
-    // if (validBaseOrgObjects.includes('INVALID_LOGIN')) return ERROR(`Your base Org (${baseOrg}) credentials are incorrect`);
-    // if (validBaseOrgObjects.length == 0) { ERROR('No valid object specified in input file for Base Org'); return }
-    // SUCCESS(`Valid Object List for Base Org - [${validBaseOrgObjects}]`)
+    // Fetch Valid Objects for Base Org
+    printAsterics()
+    LOG('Starting to Get Valid Objects for Base Org')
+    const validBaseOrgObjects = await getvalidObjectsForAnOrg(baseOrg)
+    if (validBaseOrgObjects.includes('INVALID_LOGIN')) return ERROR(`Your base Org (${baseOrg}) credentials are incorrect`);
+    if (validBaseOrgObjects.length == 0) { ERROR('No valid object specified in input file for Base Org'); return }
+    SUCCESS(`Valid Object List for Base Org - [${validBaseOrgObjects}]`)
 
-    // // Fetch Valid Objects for Destination Orgs
-    // printAsterics()
-    // LOG(`Starting to Get Valid Objects for Base Org using username - ${readConfigFile().loginDetails[baseOrg].username}`)
-    // const validDestinationOrgObjects = await getDestinationOrgsValidObjects(destinationOrgs, validBaseOrgObjects)
-    // if (typeof (validDestinationOrgObjects) == 'string' && validDestinationOrgObjects.includes('INVALID_LOGIN')) return ERROR(validDestinationOrgObjects);
-    // SUCCESS(`Valid Object List for all Destination Orgs is - ${JSON.stringify(validDestinationOrgObjects)} `)
+    // Fetch Valid Objects for Destination Orgs
+    printAsterics()
+    LOG(`Starting to Get Valid Objects for Base Org using username - ${readConfigFile().loginDetails[baseOrg].username}`)
+    const validDestinationOrgObjects = await getDestinationOrgsValidObjects(destinationOrgs, validBaseOrgObjects)
+    if (typeof (validDestinationOrgObjects) == 'string' && validDestinationOrgObjects.includes('INVALID_LOGIN')) return ERROR(validDestinationOrgObjects);
+    SUCCESS(`Valid Object List for all Destination Orgs is - ${JSON.stringify(validDestinationOrgObjects)} `)
 
-    // await autoGenerateTestsForBaseOrg(baseOrg, validBaseOrgObjects)
+    await autoGenerateTestsForBaseOrg(baseOrg, validBaseOrgObjects)
 
-    // await defineTestsForAllDestinationOrgs(destinationOrgs, validDestinationOrgObjects)
+    await defineTestsForAllDestinationOrgs(destinationOrgs, validDestinationOrgObjects)
 
-    // await executeTestsAndGenerateReport()
+    await executeTestsAndGenerateReport()
 
     printReportTable();
 
