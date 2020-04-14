@@ -28,7 +28,7 @@ const categoryLevelTests = async (envName, category, objectList, parentEnvSuiteN
             INFO(metadataDetails)
             objectLevelSuiteName.addTest(new Test('Validate at least one Record Type is available', function () {
                 reportValue(this, `Metadata Details - ${metadataDetails}`)
-                expect(metadataDetails).to.not.equal(`no record type exits`, `It appears no RecordType exist for this object (${objectNameFromFileName}). Hence, no individual LOV tests has been executed. `)
+                expect(metadataDetails).to.not.equal(`no record type exits`, `It appears no RecordType exist for this object (${objectNameFromFileName}). Hence, no LOV tests has been executed. `)
             }))
         } else {
             buildObjectLevelTests(objectLevelSuiteName, objectTests, metadataDetails, category)
