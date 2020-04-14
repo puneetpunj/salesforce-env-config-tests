@@ -1,20 +1,50 @@
 {
+    "baseOrg": "QA",
+    "destinationOrgs": [
+        "SIT",
+        "UAT"
+    ],
+    "objectList": {
+        "QA": [
+            "contact",
+            "account",
+            "asset",
+            "campaign",
+            "contract"
+        ],
+        "SIT": [
+            "contact",
+            "account",
+            "contract",
+            "campaign",
+            "asset"
+        ],
+        "UAT": [
+            "contact",
+            "account",
+            "contract",
+            "campaign",
+            "asset"
+        ]
+    },
+    "skipBaseTestGeneration": true,
+    "auotOpenDetailedExecutionReport": false,
     "loginDetails": {
-        "base": {
+        "QA": {
             "loginURL": "https://login.salesforce.com",
             "username": "sampleUsername",
             "password": "samplePassword",
             "security_token": "sampleSecurityToken",
             "version": 47
         },
-        "dest1": {
+        "SIT": {
             "loginURL": "https://login.salesforce.com",
             "username": "sampleUsername",
             "password": "samplePassword",
             "security_token": "sampleSecurityToken",
             "version": 47
         },
-        "dest2": {
+        "UAT": {
             "loginURL": "https://login.salesforce.com",
             "username": "sampleUsername",
             "password": "samplePassword",
