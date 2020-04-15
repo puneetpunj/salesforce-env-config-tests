@@ -1,5 +1,5 @@
 const { writeJSONSync } = require('fs-extra');
-const { ERROR, INFO, WARNING, SUCCESS, LOG } = require('./lib/logging')
+const { ERROR, INFO, WARNING, SUCCESS, DECORATIVELOG } = require('./lib/logging')
 const { sampleCredentialsPresent, sendSalesforceQuery, readConfigFile } = require('./lib/utiltities');
 const configFileDetails = readConfigFile();
 const { AutoGenerateTests } = require('./lib/build-env-tests');
@@ -10,7 +10,6 @@ const { printReportTable } = require('./lib/print-report-table')
 const checkSalesforceCredKeysAvailable = creds => typeof (creds) == 'object' ? true : false
 
 const checkConfigExists = (baseOrg, destinationOrg) => {
-
 
     const baseOrgCreds = configFileDetails.loginDetails[baseOrg]
     const baseOrgCredsCheck = checkSalesforceCredKeysAvailable(baseOrgCreds)
@@ -74,7 +73,7 @@ const getDestinationOrgsValidObjects = async (OrgArray, baseObjectsArray) => {
 
 const defineTestsForAllDestinationOrgs = (destinationOrgs, validDestinationOrgObjects) => {
     printAsterics()
-    LOG('Start defining tests for all destination Orgs')
+    DECORATIVELOG('Start defining tests for all destination Orgs')
     return Promise.all(destinationOrgs.map(async destinationOrg => {
         INFO(`Defining Tests for Org - ${destinationOrg} and Object List - [${validDestinationOrgObjects[destinationOrg]}]`)
         await DefineTests(destinationOrg, validDestinationOrgObjects[destinationOrg]);
@@ -119,7 +118,7 @@ const autoGenerateTestsForBaseOrg = async (baseOrg, validBaseOrgObjects) => {
     if (configFileDetails.generateBaseTests) {
         // Build Tests referencing Base Org
         printAsterics()
-        LOG('Start auto generation of test files using base org')
+        DECORATIVELOG('Start auto generation of test files using base org')
         const buildTestsResponse = await AutoGenerateTests(baseOrg, validBaseOrgObjects);
         SUCCESS(buildTestsResponse)
         writeJSONSync('./config.json', { ...configFileDetails, generateBaseTests: false })
@@ -142,7 +141,7 @@ const executeTestsAndGenerateReport = async () => {
 
     // Fetch Valid Objects for Base Org
     printAsterics()
-    LOG('Starting to Get Valid Objects for Base Org')
+    DECORATIVELOG('Starting to Get Valid Objects for Base Org')
     const validBaseOrgObjects = await getvalidObjectsForAnOrg(baseOrg)
     if (validBaseOrgObjects.includes('INVALID_LOGIN')) return ERROR(`Your base Org (${baseOrg}) credentials are incorrect`);
     if (validBaseOrgObjects.length == 0) { ERROR('No valid object specified in input file for Base Org'); return }
@@ -150,7 +149,7 @@ const executeTestsAndGenerateReport = async () => {
 
     // Fetch Valid Objects for Destination Orgs
     printAsterics()
-    LOG(`Starting to Get Valid Objects for Base Org using username - ${readConfigFile().loginDetails[baseOrg].username}`)
+    DECORATIVELOG(`Starting to Get Valid Objects for Base Org using username - ${readConfigFile().loginDetails[baseOrg].username}`)
     const validDestinationOrgObjects = await getDestinationOrgsValidObjects(destinationOrgs, validBaseOrgObjects)
     if (typeof (validDestinationOrgObjects) == 'string' && validDestinationOrgObjects.includes('INVALID_LOGIN')) return ERROR(validDestinationOrgObjects);
     SUCCESS(`Valid Object List for all Destination Orgs is - ${JSON.stringify(validDestinationOrgObjects)} `)
