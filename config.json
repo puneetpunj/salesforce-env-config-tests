@@ -27,8 +27,8 @@
             "asset"
         ]
     },
-    "skipBaseTestGeneration": true,
-    "auotOpenDetailedExecutionReport": false,
+    "generateBaseTests": true,
+    "autoOpenDetailedExecutionReport": false,
     "loginDetails": {
         "QA": {
             "loginURL": "https://login.salesforce.com",

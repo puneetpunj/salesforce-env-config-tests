@@ -116,14 +116,14 @@ const printAsterics = () => LOG('*'.repeat(80));
 
 
 const autoGenerateTestsForBaseOrg = async (baseOrg, validBaseOrgObjects) => {
-    if (!configFileDetails.skipBaseTestGeneration) {
+    if (configFileDetails.generateBaseTests) {
         // Build Tests referencing Base Org
         printAsterics()
         LOG('Start auto generation of test files using base org')
         const buildTestsResponse = await AutoGenerateTests(baseOrg, validBaseOrgObjects);
         SUCCESS(buildTestsResponse)
         configFileDetails.skipBaseTestGeneration = true
-        writeJSONSync('./config.json', { ...configFileDetails, skipBaseTestGeneration: true })
+        writeJSONSync('./config.json', { ...configFileDetails, generateBaseTests: true })
     }
 }
 
