@@ -76,7 +76,7 @@ const defineTestsForAllDestinationOrgs = (destinationOrgs, validDestinationOrgOb
     printAsterics()
     LOG('Start defining tests for all destination Orgs')
     return Promise.all(destinationOrgs.map(async destinationOrg => {
-        INFO(`Defining Tests for Org - ${destinationOrg} and Object List - ${validDestinationOrgObjects[destinationOrg]}`)
+        INFO(`Defining Tests for Org - ${destinationOrg} and Object List - [${validDestinationOrgObjects[destinationOrg]}]`)
         await DefineTests(destinationOrg, validDestinationOrgObjects[destinationOrg]);
         SUCCESS(`Tests defined for all objects for Org -> ${destinationOrg}`)
     }))
@@ -102,7 +102,7 @@ const checkErrors = () => {
 
     const { baseOrg, destinationOrgs } = configFileDetails;
 
-    if (!checkObjectsForAllOrgsExists(baseOrg, destinationOrgs)) { ERROR('Looks like "objectList" array does not exist for all base/destination orgs'); return true }
+    if (!checkObjectsForAllOrgsExists(baseOrg, destinationOrgs)) { ERROR('Looks like "objectList" array does not exist for all base/destination orgs. Check config.json file.'); return true }
 
     if (!checkConfigExists(baseOrg, destinationOrgs)) { ERROR('Config files for all specified base and destination orgs are not present. Go to config dir to add config files'); return true }
 
@@ -122,8 +122,7 @@ const autoGenerateTestsForBaseOrg = async (baseOrg, validBaseOrgObjects) => {
         LOG('Start auto generation of test files using base org')
         const buildTestsResponse = await AutoGenerateTests(baseOrg, validBaseOrgObjects);
         SUCCESS(buildTestsResponse)
-        configFileDetails.skipBaseTestGeneration = true
-        writeJSONSync('./config.json', { ...configFileDetails, generateBaseTests: true })
+        writeJSONSync('./config.json', { ...configFileDetails, generateBaseTests: false })
     }
 }
 
