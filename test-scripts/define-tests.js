@@ -25,7 +25,6 @@ const categoryLevelTests = async (envName, category, objectList, parentEnvSuiteN
         const objectLevelSuiteName = suiteInstance.create(parentCategorySuiteName, objectTests.TestSuiteName);
         const metadataDetails = await getMetadata(envName, category, objectNameFromFileName)
         if (typeof (metadataDetails) == 'string' && metadataDetails.includes('no record type exits')) {
-            INFO(metadataDetails)
             objectLevelSuiteName.addTest(new Test('Validate at least one Record Type is available', function () {
                 reportValue(this, `Metadata Details - ${metadataDetails}`)
                 expect(metadataDetails).to.not.equal(`no record type exits`, `It appears no RecordType exist for this object (${objectNameFromFileName}). Hence, no LOV tests has been executed. `)
