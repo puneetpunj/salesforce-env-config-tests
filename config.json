@@ -2,7 +2,8 @@
     "baseOrg": "QA",
     "destinationOrgs": [
         "SIT",
-        "UAT"
+        "UAT",
+        "PPTE"
     ],
     "objectList": {
         "QA": [
@@ -13,13 +14,19 @@
             "contract"
         ],
         "SIT": [
-            "contact",
             "account",
             "contract",
             "campaign",
             "asset"
         ],
         "UAT": [
+            "contact",
+            "account",
+            "contract",
+            "campaign",
+            "asset"
+        ],
+        "PPTE": [
             "contact",
             "account",
             "contract",
@@ -54,7 +61,6 @@
     },
     "LOGGING": {
         "ERROR": true,
-        "LOG": true,
         "SUCCESS": true,
         "WARNING": true,
         "INFO": true
