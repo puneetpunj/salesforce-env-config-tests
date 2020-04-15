@@ -57,6 +57,13 @@
             "password": "samplePassword",
             "security_token": "sampleSecurityToken",
             "version": 47
+        },
+        "PPTE": {
+            "loginURL": "https://login.salesforce.com",
+            "username": "sampleUsername",
+            "password": "samplePassword",
+            "security_token": "sampleSecurityToken",
+            "version": 47
         }
     },
     "LOGGING": {
