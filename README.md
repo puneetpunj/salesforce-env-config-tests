@@ -156,8 +156,17 @@ npm run comparison
 
 ### Execution Report
 
-Terminal Execution Report - Tabular execution report at object level will be generated at the end of execution
+#### Terminal Execution Report
+
+Tabular execution report at object level will be generated at the end of execution
 
 ![Terminal Report](images/terminal-report.png)
 
-A new directory `execution-report` will be generated automatically after successful execution completion. This contains `detailed-execution-report.html`. Open this file in your browser to see the detailed report. <br/> <br/>**Note:** This report would open automatically if `"autoOpenDetailedExecutionReport"` is set to `true`
+First Column of this report table is generated against Object List mentioned in `"objectList"` key for base org. In above example, it would be `objectList.QA`. <br/> <br/>
+Next columns are generated per destination Org mentioned in `destinationOrgs` array in _`config.json`_.
+
+#### Detailed Execution Report
+
+A new directory `execution-report` will be generated automatically after successful execution completion. And this would contain `detailed-execution-report.html` with detailed result for every test for `validation-rules` and `lov` for every destination org.<br/> <br/>**Note:** This report would open automatically in your browser if `"autoOpenDetailedExecutionReport"` is set to `true`. If not, go to `execution-report>` folder and open `.html` file manually.
+
+![Mochawesome Report](images/detailed-execution-report.png)
