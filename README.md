@@ -129,12 +129,12 @@ _Have a look at this article to understand how to reset your Security Token -
 
 ### Generate and Execute Automated Tests
 
-#### Clone the repository - [salesforce-env-tests](https://github.com/puneetpunj/salesforce-env-tests)
+#### Clone the repository - [salesforce-env-config-tests](https://github.com/puneetpunj/salesforce-env-config-tests)
 
 ```bash
-git clone git@github.com:puneetpunj/salesforce-env-tests.git
+git clone git@github.com:puneetpunj/salesforce-env-config-tests.git
 
-cd salesforce-env-tests
+cd salesforce-env-config-tests
 ```
 
 #### Execute Using Docker
