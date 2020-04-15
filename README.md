@@ -111,7 +111,8 @@ As these objects are setup at every org level, so can be configured accordingly.
     },
 ```
 
-_Have a look at this article to understand how to reset your Security Token - [Reset Your Security Token](https://help.salesforce.com/articleView?id=user_security_token.htm&type=5)_
+_Have a look at this article to understand how to reset your Security Token -
+<a href="https://help.salesforce.com/articleView?id=user_security_token.htm&type=5" target="_blank">Reset Your Security Token</a>_
 
 **Please note this user must have access to make API calls to Salesforce org. Preferably, use user with admin rights.**
 
@@ -157,6 +158,6 @@ npm run comparison
 
 Terminal Execution Report - Tabular execution report at object level will be generated at the end of execution
 
-!(/images/Terminal Report.png)
+![Terminal Report](images/terminal-report.png)
 
 A new directory `execution-report` will be generated automatically after successful execution completion. This contains `detailed-execution-report.html`. Open this file in your browser to see the detailed report. <br/> <br/>**Note:** This report would open automatically if `"autoOpenDetailedExecutionReport"` is set to `true`
