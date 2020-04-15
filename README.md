@@ -137,7 +137,11 @@ git clone git@github.com:puneetpunj/salesforce-env-config-tests.git
 cd salesforce-env-config-tests
 ```
 
+#### **Before proceeding further, ensure to update and setup `config.json` file based on above information**
+
 #### Execute Using Docker
+
+Assumption - your `config.json` is setup with correct credentials and object list for base and destination salesforce orgs.
 
 ```docker
 docker build -t sfconfigtests .
@@ -145,7 +149,11 @@ docker build -t sfconfigtests .
 docker run -v "`pwd`/execution-report":/mnt/execution-report -it sfconfigtests
 ```
 
+Note: in case you update any config details after `docker run` command. Please ensure to rebuild your image using `docker build -t sfconfigtests .` It is important to note this step, otherwise updates won't be reflected in the image.
+
 #### Execute Locally with node.js
+
+Assumption - your `config.json` is setup with correct credentials and object list for base and destination salesforce orgs.
 
 Prerequisite - [node.js](https://nodejs.org) must be installed
 
