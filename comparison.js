@@ -1,10 +1,10 @@
 const { writeJSONSync } = require('fs-extra');
-const { ERROR, INFO, WARNING, SUCCESS, LOG, TABLE } = require('./lib/logging')
+const { ERROR, INFO, WARNING, SUCCESS, LOG } = require('./lib/logging')
 const { sampleCredentialsPresent, sendSalesforceQuery, readConfigFile } = require('./lib/utiltities');
 const configFileDetails = readConfigFile();
-const { AutoGenerateTests } = require('./build-env-tests');
-const { DefineTests } = require('./test-scripts/define-tests')
-const { ExecuteTests } = require('./test-scripts/execute-tests')
+const { AutoGenerateTests } = require('./lib/build-env-tests');
+const { DefineTests } = require('./lib/test-scripts/define-tests')
+const { ExecuteTests } = require('./lib/test-scripts/execute-tests')
 const { printReportTable } = require('./lib/print-report-table')
 
 const checkSalesforceCredKeysAvailable = creds => typeof (creds) == 'object' ? true : false
@@ -112,7 +112,7 @@ const checkErrors = () => {
 
 }
 
-const printAsterics = () => LOG('*'.repeat(80));
+const printAsterics = () => console.log('*'.repeat(80));
 
 
 const autoGenerateTestsForBaseOrg = async (baseOrg, validBaseOrgObjects) => {
