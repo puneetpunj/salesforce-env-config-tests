@@ -78,7 +78,7 @@ As these objects are setup at every org level, so can be configured accordingly.
 "generateBaseTests": true,
 ```
 
-- `"autoOpenDetailedExecutionReport"` : (Boolean) This field derives if the detailed execution report should open automatically after successfull test execution completion. This must be set either `true` or `false` based on your preference. <br/><br/>_Please note this report will only be generate on successful test execution, this report will not be generated, if there is an error in setup or connection error due to invalid credentials._
+- `"autoOpenDetailedExecutionReport"` : (Boolean) This field derives if the detailed execution report should open automatically after successful test execution completion. This must be set either `true` or `false` based on your preference. <br/><br/>_Please note this report will only be generate on successful test execution, this report will not be generated, if there is an error in setup or connection error due to invalid credentials._
 
 ```json
 "autoOpenDetailedExecutionReport": false,
@@ -136,6 +136,8 @@ _Have a look at this article to understand how to reset your Security Token -
 ```
 
 ### Generate and Execute Automated Tests
+
+**Before proceeding further, ensure to update and setup `config.json` file based on above information**
 
 #### Execute Locally with node.js
 
