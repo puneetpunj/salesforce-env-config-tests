@@ -9,6 +9,14 @@ This utility will help you to build and run automated tests to validate Salesfor
 
 To start with utility you would have to setup the **config.json** file. Open `config.json` and setup below configuration.
 
+### Clone the repository - [salesforce-env-config-tests](https://github.com/puneetpunj/salesforce-env-config-tests)
+
+```bash
+git clone git@github.com:puneetpunj/salesforce-env-config-tests.git
+
+cd salesforce-env-config-tests
+```
+
 ### Setup Config File
 
 - `"baseOrg"` : This should be the salesforce environment which would act as Base and the automated tests will be generated based on its metadata. You can specify any alias name for this. e.g: "QA" <br /> <br />
@@ -129,12 +137,13 @@ _Have a look at this article to understand how to reset your Security Token -
 
 ### Generate and Execute Automated Tests
 
-#### Clone the repository - [salesforce-env-config-tests](https://github.com/puneetpunj/salesforce-env-config-tests)
+#### Execute Locally with node.js
+
+Prerequisite - [node.js](https://nodejs.org) must be installed
 
 ```bash
-git clone git@github.com:puneetpunj/salesforce-env-config-tests.git
-
-cd salesforce-env-config-tests
+npm i
+npm run comparison
 ```
 
 #### Execute Using Docker
@@ -143,15 +152,6 @@ cd salesforce-env-config-tests
 docker build -t sfconfigtests .
 
 docker run -v "`pwd`/execution-report":/mnt/execution-report -it sfconfigtests
-```
-
-#### Execute Locally with node.js
-
-Prerequisite - [node.js](https://nodejs.org) must be installed
-
-```bash
-npm i
-npm run comparison
 ```
 
 ### Execution Report
