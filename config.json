@@ -1,33 +1,17 @@
 {
     "baseOrg": "QA",
     "destinationOrgs": [
-        "SIT",
-        "UAT",
-        "PPTE"
+        "SIT"
     ],
     "objectList": {
         "QA": [
             "contact",
             "account",
-            "asset",
+            "contract",
             "campaign",
-            "contract"
+            "asset"
         ],
         "SIT": [
-            "account",
-            "contract",
-            "campaign",
-            "asset"
-        ],
-        "UAT": [
-            "contact",
-            "account",
-            "contract",
-            "campaign",
-            "asset"
-        ],
-        "PPTE": [
-            "contact",
             "account",
             "contract",
             "campaign",
@@ -38,31 +22,15 @@
     "autoOpenDetailedExecutionReport": false,
     "loginDetails": {
         "QA": {
-            "loginURL": "https://login.salesforce.com",
-            "username": "sampleUsername",
-            "password": "samplePassword",
-            "security_token": "sampleSecurityToken",
+            "loginURL": "https://test.salesforce.com",
+            "sfConsumerKey": "",
+            "username": "",
             "version": 47
         },
         "SIT": {
-            "loginURL": "https://login.salesforce.com",
-            "username": "sampleUsername",
-            "password": "samplePassword",
-            "security_token": "sampleSecurityToken",
-            "version": 47
-        },
-        "UAT": {
-            "loginURL": "https://login.salesforce.com",
-            "username": "sampleUsername",
-            "password": "samplePassword",
-            "security_token": "sampleSecurityToken",
-            "version": 47
-        },
-        "PPTE": {
-            "loginURL": "https://login.salesforce.com",
-            "username": "sampleUsername",
-            "password": "samplePassword",
-            "security_token": "sampleSecurityToken",
+            "loginURL": "https://test.salesforce.com",
+            "sfConsumerKey": "",
+            "username": "",
             "version": 47
         }
     },
