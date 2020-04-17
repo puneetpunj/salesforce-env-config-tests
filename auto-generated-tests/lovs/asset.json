@@ -1,1 +1,1 @@
-{"TestSuiteName":"Check LOVs for object - asset","TestCases":[{"id":1,"TestCaseName":"Validate LOVs for field - Status","inputData":{"name":"Status"},"expectedOutput":{"value":["Shipped","Installed","Registered","Obsolete","Purchased"]}}]}
+{"TestSuiteName":"Check LOVs for object - asset","assettest":{"TestCases":[{"id":1,"TestCaseName":"Validate LOVs for field - Status","inputData":{"name":"Status"},"expectedOutput":{"value":["Shipped","Installed","Registered","Obsolete","Purchased"]}}],"RecordTypeTestSuiteName":"Check LOVs for record type - assettest"}}
