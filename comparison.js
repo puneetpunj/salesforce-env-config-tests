@@ -30,7 +30,7 @@ const checkSampleCredentialsForAllEnv = (baseOrg, destinationOrgs) => {
 const getOnlyValidObjects = (baseArray, secondaryArray, orgName) => {
     const validObjects = baseArray.reduce((acc, i) => {
         if (secondaryArray.includes(i.toLowerCase())) acc.push(i)
-        else WARNING(`Object - ${i} is not present in Org -> ${orgName}`)
+        else WARNING(`Object - ${i} is not present in Object List of Org -> ${orgName}`)
         return acc
     }, [])
     return validObjects;
