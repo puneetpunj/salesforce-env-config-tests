@@ -36,7 +36,7 @@ Example config:
     ]
 ```
 
-- `"objectList"` : This contain list of objects for each environment/org specified in above `baseOrg` and `destinationOrgs`. Based on above config for base and destination orgs, this would look like as:
+- `"objectList"` : This contains api names of objects for each environment/org specified in above `baseOrg` and `destinationOrgs`. Based on above config for base and destination orgs, this would look like as:
 
 ```json
 "objectList": {
@@ -72,7 +72,17 @@ Example config:
 
 As these objects are setup at every org level, so can be configured accordingly.
 
-- `"generateBaseTests"` :(Boolean) This is very important key of this utility. This specifies whether or not base tests need to be generated for every validation of destination orgs. <br/> <br/> In an actual environment, you would like to generate base tests from your **QA** environment for the release and continue to validate against destination orgs for the rest of the release and at the same time new changes will get deployed in QA environment. <br/><br/> So this means, this parameter must be set to **`true`** for the first time and `false` thereafter, unless you want to specifically overwrite base tests this key value must always be `false`. <br/> <br/> **With this in mind, code is designed to update it automatically to `false` whenever it generates base tests successfully. So you don't have to manually bother updating it.**
+- `"generateBaseTests"` :(Boolean) This is very important key of this utility. This specifies whether or not base tests need to be generated for every validation of destination orgs. <br/> <br/>
+
+* `true`: this will generate the base test file for the objects listed for base org in a folder `auto-generated-tests`. Sample base test file:
+
+  ![Base Tests](images/base-tests.png)
+
+* `false` : This must be set to false if base test files are already generated as part of previous run. And you want to run validation tests against destination orgs only.
+
+##### Project example:
+
+In an actual project environment, you would like to generate base tests from your **QA** environment for the release and continue to validate against destination orgs for the rest of the release and at the same time new changes will get deployed in QA environment. <br/><br/> So this means, this parameter must be set to **`true`** for the first time and `false` thereafter, unless you want to specifically overwrite base tests this key value must always be `false`. <br/> <br/> **With this in mind, code is designed to update it automatically to `false` whenever it generates base tests successfully. So you don't have to manually bother updating it.**
 
 ```json
 "generateBaseTests": true,
@@ -89,28 +99,28 @@ As these objects are setup at every org level, so can be configured accordingly.
 ```json
 "loginDetails": {
         "QA": {
-            "loginURL": "https://login.salesforce.com",
+            "loginURL": "https://test.salesforce.com",
             "username": "sampleUsername",
             "password": "samplePassword",
             "security_token": "sampleSecurityToken",
             "version": 47
         },
         "SIT": {
-            "loginURL": "https://login.salesforce.com",
+            "loginURL": "https://test.salesforce.com",
             "username": "sampleUsername",
             "password": "samplePassword",
             "security_token": "sampleSecurityToken",
             "version": 47
         },
         "UAT": {
-            "loginURL": "https://login.salesforce.com",
+            "loginURL": "https://test.salesforce.com",
             "username": "sampleUsername",
             "password": "samplePassword",
             "security_token": "sampleSecurityToken",
             "version": 47
         },
          "PPTE": {
-            "loginURL": "https://login.salesforce.com",
+            "loginURL": "https://test.salesforce.com",
             "username": "sampleUsername",
             "password": "samplePassword",
             "security_token": "sampleSecurityToken",
@@ -135,6 +145,13 @@ _Have a look at this article to understand how to reset your Security Token -
     }
 ```
 
+Logging snapshots:
+
+![error](images/error-log.png)
+![success](images/success-log.png)
+![warning](images/warning-log.png)
+![info](images/info-log.png)
+
 ### Generate and Execute Automated Tests
 
 **Before proceeding further, ensure to update and setup `config.json` file based on above information**
@@ -147,6 +164,8 @@ Prerequisite - [node.js](https://nodejs.org) must be installed
 npm i
 npm run comparison
 ```
+
+![local-execution](images/local-execution.mov)
 
 #### Execute Using Docker
 
