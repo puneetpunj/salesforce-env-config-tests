@@ -1,6 +1,7 @@
-const { writeJSONSync } = require('fs-extra');
 const { ERROR, INFO, WARNING, SUCCESS, DECORATIVELOG } = require('./lib/logging')
-const { sampleCredentialsPresent, sendSalesforceQuery, readConfigFile } = require('./lib/utiltities');
+const { sampleCredentialsPresent } = require('./lib/utiltities');
+const { sendSalesforceQuery } = require('./lib/salesforce/salesforce-interaction');
+const { readConfigFile, updateGenerateBaseTestsKeyInConfig } = require('./lib/file-interactions');
 const configFileDetails = readConfigFile();
 const { AutoGenerateTests } = require('./lib/build-env-tests');
 const { DefineTests } = require('./lib/test-scripts/define-tests')
@@ -47,7 +48,7 @@ const getvalidObjectsForAnOrg = async Org => {
     if (typeof (OrgObjectsInSalesforce) == 'string' && OrgObjectsInSalesforce.includes('INVALID_LOGIN')) return OrgObjectsInSalesforce
 
     if (OrgObjectsInSalesforce.totalSize == inputObjectList.length) return inputObjectList
-
+    console.log(OrgObjectsInSalesforce)
     const SalesforceObjectArray = OrgObjectsInSalesforce.records.map(i => i.QualifiedApiName.toLowerCase())
     const validObjects = getOnlyValidObjects(inputObjectList, SalesforceObjectArray, Org)
     return validObjects
@@ -121,7 +122,7 @@ const autoGenerateTestsForBaseOrg = async (baseOrg, validBaseOrgObjects) => {
         DECORATIVELOG('Start auto generation of test files using base org')
         const buildTestsResponse = await AutoGenerateTests(baseOrg, validBaseOrgObjects);
         SUCCESS(buildTestsResponse)
-        writeJSONSync('./config.json', { ...configFileDetails, generateBaseTests: false })
+        updateGenerateBaseTestsKeyInConfig(configFileDetails)
     }
 }
 
