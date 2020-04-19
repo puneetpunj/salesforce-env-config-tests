@@ -7,8 +7,6 @@ This utility will help you to build and run automated tests to validate Salesfor
 
 ## What do you need to do?
 
-To start with utility you would have to setup the **config.json** file. Open `config.json` and setup below configuration.
-
 ### Clone the repository - [salesforce-env-config-tests](https://github.com/puneetpunj/salesforce-env-config-tests)
 
 ```bash
@@ -16,6 +14,8 @@ git clone git@github.com:puneetpunj/salesforce-env-config-tests.git
 
 cd salesforce-env-config-tests
 ```
+
+To start with utility you would have to setup the **config.json** file. Open `config.json` and setup below configuration.
 
 ### Setup Config File
 
@@ -78,17 +78,17 @@ As these objects are setup at every org level, so can be configured accordingly.
 
   ![Base Tests](images/base-tests.png)
 
-* `false` : This must be set to false if base test files are already generated as part of previous run. And you want to run validation tests against destination orgs only.
+* `false` : This must be set to false if base test files are already generated as part of previous run and the same tests have to be used for all subsequent executions.
 
 ##### Project example:
 
-In an actual project environment, you would like to generate base tests from your **QA** environment for the release and continue to validate against destination orgs for the rest of the release and at the same time new changes will get deployed in QA environment. <br/><br/> So this means, this parameter must be set to **`true`** for the first time and `false` thereafter, unless you want to specifically overwrite base tests this key value must always be `false`. <br/> <br/> **With this in mind, code is designed to update it automatically to `false` whenever it generates base tests successfully. So you don't have to manually bother updating it.**
+In an actual project environment, you would like to generate base tests from your **QA** environment for the release and continue to validate against destination orgs for the rest of the release. <br/><br/> So this means, this parameter must be set to **`true`** for the first time and `false` thereafter, unless you want to specifically overwrite base tests this key value must always be `false`. <br/> <br/> **With this in mind, code is designed to update it automatically to `false` whenever it generates base tests successfully. So you don't have to bother updating it manually.**
 
 ```json
 "generateBaseTests": true,
 ```
 
-- `"autoOpenDetailedExecutionReport"` : (Boolean) This field derives if the detailed execution report should open automatically after successful test execution completion. This must be set either `true` or `false` based on your preference. <br/><br/>_Please note this report will only be generate on successful test execution, this report will not be generated, if there is an error in setup or connection error due to invalid credentials._
+- `"autoOpenDetailedExecutionReport"` : (Boolean) This field derives if the detailed execution report should open automatically after successful test execution completion. This must be set either `true` or `false` based on your preference. <br/><br/>_Please note this report will only be generated on. Successful execution and won’t be there in case of any failures or setup errors._
 
 ```json
 "autoOpenDetailedExecutionReport": false,
@@ -177,9 +177,11 @@ docker run -v "`pwd`/execution-report":/mnt/execution-report -it sfconfigtests
 
 ### Execution Report
 
+After successful execution two types of report will be generated:
+
 #### Terminal Execution Report
 
-Tabular execution report at object level will be generated at the end of execution
+This contains the summary of execution in tabular format for each object per Destination org (as specified in `config.json`)
 
 ![Terminal Report](images/terminal-report.png)
 
