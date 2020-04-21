@@ -14,56 +14,71 @@
             "contract"
         ],
         "SIT": [
+            "contact",
             "account",
-            "contract",
+            "asset",
             "campaign",
-            "asset"
+            "contract"
         ],
         "UAT": [
             "contact",
             "account",
-            "contract",
+            "asset",
             "campaign",
-            "asset"
+            "contract"
         ],
         "PPTE": [
             "contact",
             "account",
-            "contract",
+            "asset",
             "campaign",
-            "asset"
+            "contract"
         ]
     },
-    "generateBaseTests": true,
+    "generateBaseTests": false,
     "autoOpenDetailedExecutionReport": false,
     "loginDetails": {
         "QA": {
             "loginURL": "https://login.salesforce.com",
             "username": "sampleUsername",
-            "password": "samplePassword",
-            "security_token": "sampleSecurityToken",
-            "version": 47
+            "version": 47,
+            "usernameAndPasswordAuth": {
+                "inUse": true,
+                "password": "samplePassword",
+                "security_token": "sampleSecurityToken"
+            },
+            "oAuth": {
+                "inUse": true,
+                "consumerKey": "sampleConsumerKey"
+            }
         },
         "SIT": {
             "loginURL": "https://login.salesforce.com",
             "username": "sampleUsername",
-            "password": "samplePassword",
-            "security_token": "sampleSecurityToken",
-            "version": 47
+            "version": 47,
+            "usernameAndPasswordAuth": {
+                "inUse": true,
+                "password": "samplePassword",
+                "security_token": "sampleSecurityToken"
+            },
+            "oAuth": {
+                "inUse": false,
+                "consumerKey": "sampleConsumerKey"
+            }
         },
         "UAT": {
             "loginURL": "https://login.salesforce.com",
             "username": "sampleUsername",
-            "password": "samplePassword",
-            "security_token": "sampleSecurityToken",
-            "version": 47
-        },
-        "PPTE": {
-            "loginURL": "https://login.salesforce.com",
-            "username": "sampleUsername",
-            "password": "samplePassword",
-            "security_token": "sampleSecurityToken",
-            "version": 47
+            "version": 47,
+            "usernameAndPasswordAuth": {
+                "inUse": true,
+                "password": "samplePassword",
+                "security_token": "sampleSecurityToken"
+            },
+            "oAuth": {
+                "inUse": false,
+                "consumerKey": "sampleConsumerKey"
+            }
         }
     },
     "LOGGING": {
