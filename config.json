@@ -35,7 +35,7 @@
             "contract"
         ]
     },
-    "generateBaseTests": false,
+    "generateBaseTests": true,
     "autoOpenDetailedExecutionReport": false,
     "loginDetails": {
         "QA": {
