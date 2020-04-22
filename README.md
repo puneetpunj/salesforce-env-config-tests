@@ -94,37 +94,70 @@ In an actual project environment, you would like to generate base tests from you
 "autoOpenDetailedExecutionReport": false,
 ```
 
-- `"loginDetails"` : As name suggests, this contains the login credentials for your Salesforce Orgs. <br/> To avoid any setup error, provide credentials for every `base` and `destination` org in below format:
+- `"loginDetails"` : As name suggests, this contains the login credentials for your Salesforce Orgs. <br/> There are two ways you can authenticate with Salesforce
+
+* Using username, password and security token
+* Using oAuth (connected app)
+
+credentials To avoid any setup error, provide credentials for every `base` and `destination` org in below format:
 
 ```json
-"loginDetails": {
+ "loginDetails": {
         "QA": {
-            "loginURL": "https://test.salesforce.com",
+            "loginURL": "https://login.salesforce.com",
             "username": "sampleUsername",
-            "password": "samplePassword",
-            "security_token": "sampleSecurityToken",
-            "version": 47
+            "version": 47,
+            "usernameAndPasswordAuth": {
+                "inUse": true,
+                "password": "samplePassword",
+                "security_token": "sampleSecurityToken"
+            },
+            "oAuth": {
+                "inUse": true,
+                "consumerKey": "sampleConsumerKey"
+            }
         },
         "SIT": {
-            "loginURL": "https://test.salesforce.com",
+            "loginURL": "https://login.salesforce.com",
             "username": "sampleUsername",
-            "password": "samplePassword",
-            "security_token": "sampleSecurityToken",
-            "version": 47
+            "version": 47,
+            "usernameAndPasswordAuth": {
+                "inUse": true,
+                "password": "samplePassword",
+                "security_token": "sampleSecurityToken"
+            },
+            "oAuth": {
+                "inUse": false,
+                "consumerKey": "sampleConsumerKey"
+            }
         },
         "UAT": {
-            "loginURL": "https://test.salesforce.com",
+            "loginURL": "https://login.salesforce.com",
             "username": "sampleUsername",
-            "password": "samplePassword",
-            "security_token": "sampleSecurityToken",
-            "version": 47
+            "version": 47,
+            "usernameAndPasswordAuth": {
+                "inUse": true,
+                "password": "samplePassword",
+                "security_token": "sampleSecurityToken"
+            },
+            "oAuth": {
+                "inUse": false,
+                "consumerKey": "sampleConsumerKey"
+            }
         },
-         "PPTE": {
-            "loginURL": "https://test.salesforce.com",
+        "PPTE": {
+            "loginURL": "https://login.salesforce.com",
             "username": "sampleUsername",
-            "password": "samplePassword",
-            "security_token": "sampleSecurityToken",
-            "version": 47
+            "version": 47,
+            "usernameAndPasswordAuth": {
+                "inUse": true,
+                "password": "samplePassword",
+                "security_token": "sampleSecurityToken"
+            },
+            "oAuth": {
+                "inUse": false,
+                "consumerKey": "sampleConsumerKey"
+            }
         }
     },
 ```
