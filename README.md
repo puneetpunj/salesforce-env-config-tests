@@ -99,7 +99,7 @@ In an actual project environment, you would like to generate base tests from you
 * Using username, password and security token
 * Using oAuth (connected app)
 
-credentials To avoid any setup error, provide credentials for every `base` and `destination` org in below format:
+To avoid any setup error, provide at least one type of credentials for every `base` and `destination` org. Ensure `inUse` is `true` for one of the credentials type. Use below format:
 
 ```json
  "loginDetails": {
@@ -197,8 +197,6 @@ Prerequisite - [node.js](https://nodejs.org) must be installed
 npm i
 npm run comparison
 ```
-
-![local-execution](images/local-execution.mov)
 
 #### Execute Using Docker
 
