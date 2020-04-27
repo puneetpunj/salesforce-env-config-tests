@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Validate destination orgs config based on based org",
   "scripts": {
-    "comparison": "node comparison.js"
+    "comparison": "node comparison.js",
+    "sf:docker:build": "docker build -t sfconfigtests .",
+    "sf:docker:run": "docker run -v \"`pwd`/execution-report\":/mnt/execution-report -it sfconfigtests"
   },
   "author": "Puneet Punj",
   "license": "ISC",
