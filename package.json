@@ -14,7 +14,7 @@
     "cli-table": "^0.3.1",
     "fs-extra": "^9.0.0",
     "jsforce": "^1.9.3",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mocha": "^7.1.1",
     "mochawesome": "^5.0.0",
     "node-emoji": "^1.10.0"
